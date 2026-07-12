@@ -36,12 +36,12 @@ export class ClienteRepository extends BaseRepository<ClienteEntity> {
         'cliente.idTipoDocumento',
         'cliente.activo',
 
-        'migracionInfo.id',
-        'migracionInfo.legacyMysqlId',
-        'migracionInfo.fechaMigracion',
-        'migracionInfo.usuarioMigrador',
+        'clienteMigracion.id',
+        'clienteMigracion.legacyMysqlId',
+        'clienteMigracion.fechaMigracion',
+        'clienteMigracion.usuarioMigrador',
       ])
-      .leftJoin('cliente.migracionInfo', 'migracionInfo')
+      .leftJoin('cliente.clienteMigracion', 'clienteMigracion')
       .innerJoinAndSelect('cliente.tipoDocumento', 'tipoDocumento');
 
     if (filters.length > 0) {

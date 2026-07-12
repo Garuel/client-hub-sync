@@ -2,7 +2,7 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { ClienteEntity } from '../core/cliente.entity';
 
 @Entity({
-  schema: 'core',
+  schema: 'masters',
   name: 'tp_tipo_documento',
 })
 export class TipoDocumentoEntity {

@@ -21,6 +21,10 @@ import { ClienteMigracionEntity } from './core/database/entities/core/cliente-mi
         password: configService.get('DATABASE_PASSWORD'),
         database: configService.get('DATABASE_NAME'),
         entities: [ClienteEntity, TipoDocumentoEntity, ClienteMigracionEntity],
+        migrations: [__dirname + '/**/migrations/**/*{.js,.ts}'],
+        cli: {
+          migrationsDir: __dirname + '/migrations',
+        },
         ssl:
           configService.get('NODE_ENV') === 'production'
             ? { rejectUnauthorized: false }

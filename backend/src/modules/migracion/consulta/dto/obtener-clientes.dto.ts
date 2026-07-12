@@ -5,7 +5,6 @@ import { BasePaginationRequest } from 'src/core/domain/classes/base-pagination-r
 export class ObtenerClientesDto extends BasePaginationRequest {
   @IsOptional()
   @IsString()
-  @IsNotEmpty()
   search: string = '';
 
   @IsOptional()

@@ -1,6 +1,7 @@
 
 import { apiClient } from '../../../core/api/api-client';
-import type { IPaginatedResponse } from '../../../share/type';
+import { ENDPOINTS } from '../../../core/constants/endpoints.contant';
+import type { ResponseAPI, IPaginatedResponse } from '../../../share/type';
 import type { ClienteInterface } from '../types/cliente.type';
 
 export interface ObtenerClientesQueryParams {
@@ -17,6 +18,12 @@ export const ClientesService = {
         const response = await apiClient.get<IPaginatedResponse<ClienteInterface>>('/migration/clients', {
             params,
         });
+        return response.data;
+    },
+
+    ejecutarEtl: async (): Promise<ResponseAPI> => {
+
+        const response = await apiClient.post<ResponseAPI>(ENDPOINTS.MIGRATION.RUN);
         return response.data;
     },
 };

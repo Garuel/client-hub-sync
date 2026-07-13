@@ -1,5 +1,6 @@
 
 import axios from 'axios';
+import { toast } from 'react-hot-toast';
 
 export const apiClient = axios.create({
 
@@ -10,10 +11,23 @@ export const apiClient = axios.create({
 });
 
 
-apiClient.interceptors.request.use((config) => {
-    const token = localStorage.getItem('token');
-    if (token && config.headers) {
-        config.headers.Authorization = `Bearer ${token}`;
+apiClient.interceptors.response.use(
+    (response) => {
+        // const token = localStorage.getItem('token');
+        // if (token && response.headers) {
+        //     response.headers.Authorization = `Bearer ${token}`;
+        // }
+        return response
+    },
+    (error) => {
+        const mensaje = error.response?.data?.message || 'Ocurrió un error inesperado';
+
+        toast.error(`Error del Servidor: ${mensaje}`);
+
+
+
+        return Promise.reject(error);
     }
-    return config;
-});
+
+);
+

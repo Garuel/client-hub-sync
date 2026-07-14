@@ -10,7 +10,7 @@ export class ConsultaMigracionController {
 
     @Get('clients')
     async obtenerClientes(
-        @Query(new ValidationPipe({ transform: true }))
+        @Query()
         filtrosDto: ObtenerClientesDto,
     ) {
         return this.consultaService.obtenerClientes(filtrosDto);

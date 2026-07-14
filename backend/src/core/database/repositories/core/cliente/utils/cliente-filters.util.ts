@@ -12,8 +12,10 @@ export namespace ClienteFilters {
       filters += ' AND cliente.activo = :activo';
     }
 
-    if (filtros.migrado) {
-      filters += ' AND cliente.migrado = :migrado';
+    if (filtros.migrado === true) {
+      filters += ' AND clienteMigracion.id IS NOT NULL';
+    } else if (filtros.migrado === false) {
+      filters += ' AND clienteMigracion.id IS NULL';
     }
 
     return filters.length > 0 ? filters.substring(5) : filters;

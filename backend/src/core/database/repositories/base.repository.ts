@@ -17,7 +17,6 @@ export abstract class BaseRepository<T extends ObjectLiteral> {
   }
 
   setTransactionManager(manager: EntityManager): this {
-    this.repo = manager.getRepository(this.repo.target);
-    return this;
+    return new (this.constructor as any)(manager);
   }
 }

@@ -10,12 +10,15 @@ export class ConsultaMigracionService {
   constructor(private readonly clienteRepository: ClienteRepository) { }
 
   async obtenerClientes(dto: ObtenerClientesDto): Promise<IPaginatedResponse<ObtenerClientesResponse>> {
+    const limit = dto.limit ?? 3;
+    const page = dto.page ?? 1;
+
     const filtros: ClienteFiltros = {
       search: dto.search,
       activo: dto.active,
       migrado: dto.migrado,
       offset: dto.offset,
-      limit: dto.limit ?? 3,
+      limit,
     };
 
     const [clientes, total] = await this.clienteRepository.findPaginado(filtros);
@@ -26,9 +29,9 @@ export class ConsultaMigracionService {
       meta: {
         totalItems: total,
         itemCount: dataMapeada.length,
-        itemsPerPage: dto.limit,
-        totalPages: Math.ceil(total / dto.limit),
-        currentPage: dto.page,
+        itemsPerPage: limit,
+        totalPages: Math.ceil(total / limit),
+        currentPage: page,
       }
     }
   }

@@ -22,7 +22,7 @@ export namespace TransformarDatosUtil {
           nombreCompleto,
           nombres: legacyUser.txt_primer_nombre + (legacyUser.txt_segundo_nombre ? ` ${legacyUser.txt_segundo_nombre}` : ''),
           apellidoPaterno: legacyUser.txt_apellido_paterno,
-          apellidoMaterno: legacyUser.txt_apellido_materno || null,
+          apellidoMaterno: legacyUser.txt_apellido_materno || undefined,
           numeroDocumento: legacyUser.num_dni_ruc,
           idTipoDocumento: legacyUser.id_tipo_doc_legacy,
           activo: legacyUser.flg_activo === 1,

@@ -1,29 +1,27 @@
-import { DataSource, EntityManager, InsertResult, SelectQueryBuilder } from 'typeorm';
+import { ClienteFiltros } from 'src/core/domain/interfaces/repositories/cliente-filtros.interface';
+import { DataSource, InsertResult, Repository, SelectQueryBuilder } from 'typeorm';
 import { ClienteEntity } from '../../../entities/core/cliente.entity';
-import { BaseRepository } from '../../base.repository';
 import { IClienteInsert } from './insert/cliente.insert';
 import { ClienteFilters } from './utils/cliente-filters.util';
-import { ClienteFiltros } from 'src/core/domain/interfaces/repositories/cliente-filtros.interface';
 
-export class ClienteRepository extends BaseRepository<ClienteEntity> {
-  constructor(connection: DataSource | EntityManager) {
-    super(connection, ClienteEntity);
+export class ClienteRepository extends Repository<ClienteEntity> {
+  constructor(connection: DataSource) {
+    super(ClienteEntity, connection.createEntityManager());
   }
 
   async insert(clienteInsert: IClienteInsert[]): Promise<InsertResult> {
-    return this.repo
+    return this
       .createQueryBuilder()
       .insert()
       .into(ClienteEntity)
       .values(clienteInsert)
+      .returning(['id', 'publicKey'])
       .execute();
   }
 
 
   private getBaseQuery(filtros: ClienteFiltros): SelectQueryBuilder<ClienteEntity> {
-    const filters = ClienteFilters.getFilters(filtros);
-
-    const query = this.repo
+    const query = this
       .createQueryBuilder('cliente')
       .select([
         'cliente.id',
@@ -42,14 +40,23 @@ export class ClienteRepository extends BaseRepository<ClienteEntity> {
         'clienteMigracion.usuarioMigrador',
       ])
       .leftJoin('cliente.clienteMigracion', 'clienteMigracion')
-      .innerJoinAndSelect('cliente.tipoDocumento', 'tipoDocumento');
+      .innerJoinAndSelect('cliente.tipoDocumento', 'tipoDocumento')
 
-    if (filters.length > 0) {
-      query.where(filters, {
+
+    if (filtros.search) {
+      query.andWhere('cliente.nombreCompleto ILIKE :search', {
         search: `%${filtros.search}%`,
-        activo: filtros.activo,
-        migrado: filtros.migrado,
       });
+    }
+
+    if (filtros.activo !== undefined) {
+      query.andWhere('cliente.activo = :activo', { activo: filtros.activo });
+    }
+
+    if (filtros.migrado === true) {
+      query.andWhere('clienteMigracion.id IS NOT NULL');
+    } else if (filtros.migrado === false) {
+      query.andWhere('clienteMigracion.id IS NULL');
     }
 
     return query;

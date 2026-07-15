@@ -35,6 +35,6 @@ export class ObtenerClientesResponse {
   clienteMigracion?: {
     legacyMysqlId: number;
     fechaMigracion: Date;
-    usuarioMigrador: string;
+    usuarioMigrador: string | undefined;
   }
 }

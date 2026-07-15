@@ -5,10 +5,13 @@ import { DataSource } from 'typeorm';
 import { ILegacyClienteMySQL } from './interfaces/legacy-cliente-mysql.interface';
 import { TransformarDatosUtil } from './utils/transformar-datos-migracion.util';
 import { ClienteMigracionRepository } from 'src/core/database/repositories/core/cliente-migracion/cliente-migracion.repository';
+import { IClienteMigracionInsert } from 'src/core/database/repositories/core/cliente-migracion/insert/cliente-migracion.insert';
+import { TypeGuardsUtil } from 'src/core/infrastructure/utils/type-guards.util';
 
 @Injectable()
 export class MantenimientoMigracionService {
   private readonly logger = new Logger(MantenimientoMigracionService.name);
+  private readonly CHUNK_SIZE = 500;
 
   constructor(
     private readonly dataSource: DataSource,
@@ -31,40 +34,59 @@ export class MantenimientoMigracionService {
         },
       };
     }
+    const totalRegistros = datosLegacyMySQL.length;
 
     const migracionResponse = await this.dataSource.transaction<ResponseAPI>(
       async (manager) => {
         const clienteRepository =
-          this.clienteRepositoryInyectado.setTransactionManager(manager);
+          manager.withRepository(this.clienteRepositoryInyectado);
         const clienteMigracionRepository =
-          this.clienteMigracionRepositoryInyectado.setTransactionManager(
-            manager,
-          );
+          manager.withRepository(this.clienteMigracionRepositoryInyectado);
 
-        const responseTransformacion =
-          TransformarDatosUtil.migracion(datosLegacyMySQL);
-        const { clientesTransformados } = responseTransformacion;
+        let registrosMigradosContador = 0;
 
-        const clientesInsertDto = clientesTransformados.map(item => item.cliente);
+        for (let i = 0; i < totalRegistros; i += this.CHUNK_SIZE) {
+          const chunk = datosLegacyMySQL.slice(i, i + this.CHUNK_SIZE);
+          this.logger.log(`Procesando lote: registros del ${i + 1} al ${Math.min(i + this.CHUNK_SIZE, totalRegistros)}`);
 
-        const insertResult = await clienteRepository.insert(clientesInsertDto);
+          const { clientesTransformados } = TransformarDatosUtil.migracion(chunk);
+          const clientesInsertDto = clientesTransformados.map(item => item.cliente);
 
-        const migracionInserts = clientesTransformados.map((item, index) => {
-          const idClienteGenerado = insertResult.identifiers[index].id;
-          return {
-            idCliente: idClienteGenerado,
-            legacyMysqlId: item.migracionMetadata.legacyMysqlId,
-            fechaMigracion: item.migracionMetadata.fechaMigracion,
+          const insertResult = await clienteRepository.insert(clientesInsertDto);
+
+          const registrosInsertados: { id: number; publicKey: string }[] = insertResult.raw;
+
+          const idMap = new Map<string, number>();
+
+          registrosInsertados.forEach(row => {
+            const publicKey = row.publicKey || (row as any).public_key;
+            idMap.set(publicKey, row.id);
+          });
+
+          const clienteMigracionInsert: IClienteMigracionInsert[] = clientesTransformados
+            .map(item => {
+              const idClienteGenerado = idMap.get(item.cliente.publicKey);
+
+              if (!idClienteGenerado) return null;
+
+              return {
+                idCliente: idClienteGenerado,
+                legacyMysqlId: item.migracionMetadata.legacyMysqlId,
+                fechaMigracion: item.migracionMetadata.fechaMigracion,
+              };
+            })
+            .filter(TypeGuardsUtil.IsNotNull);
+
+          if (clienteMigracionInsert.length > 0) {
+            await clienteMigracionRepository.insert(clienteMigracionInsert);
+            registrosMigradosContador += clienteMigracionInsert.length;
           }
-        })
-
-        await clienteMigracionRepository.insert(migracionInserts)
+        }
 
         return {
-          message: 'data migrada',
+          message: 'data migrada con éxito',
           data: {
-            registrosMigradosContador:
-              responseTransformacion.registrosMigradosContador,
+            registrosMigradosContador,
           },
         };
       },

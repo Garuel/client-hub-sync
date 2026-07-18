@@ -1,4 +1,5 @@
-import { Controller, Post, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { EjecutarMigracionResponse } from './dto/migracion.dto';
 import { MantenimientoMigracionService } from './mantenimiento.service';
 import { ResponseAPI } from 'src/core/domain/interfaces/response-api.interface';
 
@@ -10,7 +11,7 @@ export class MantenimientoMigracionController {
 
     @Post('run')
     @HttpCode(HttpStatus.OK)
-    async ejecutarEtl(): Promise<ResponseAPI> {
+    async ejecutarEtl(): Promise<ResponseAPI<EjecutarMigracionResponse>> {
         return this.mantenimientoService.ejecutarMigracion();
     }
 }

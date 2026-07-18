@@ -79,7 +79,7 @@ export class ClienteEntity {
   activo: boolean;
 
 
-  @ManyToOne(() => TipoDocumentoEntity, (tipoDocumento) => tipoDocumento.id)
+  @ManyToOne(() => TipoDocumentoEntity, (tipoDocumento) => tipoDocumento.clientes)
   @JoinColumn({ name: 'id_tipo_documento' })
   tipoDocumento: TipoDocumentoEntity;
 

@@ -3,6 +3,8 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { Logger, ValidationPipe } from '@nestjs/common';
+import { ResponseInterceptor } from './core/infrastructure/interceptors/response.interceptor';
+import { DatabaseExceptionFilter } from './core/infrastructure/filters/database.exception.filters';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -43,6 +45,9 @@ async function bootstrap() {
       },
     }),
   );
+
+  app.useGlobalInterceptors(new ResponseInterceptor());
+  app.useGlobalFilters(new DatabaseExceptionFilter());
 
 
   await app.listen(PORT);

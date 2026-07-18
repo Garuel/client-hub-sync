@@ -7,6 +7,8 @@ import { TransformarDatosUtil } from './utils/transformar-datos-migracion.util';
 import { ClienteMigracionRepository } from 'src/core/database/repositories/core/cliente-migracion/cliente-migracion.repository';
 import { IClienteMigracionInsert } from 'src/core/database/repositories/core/cliente-migracion/insert/cliente-migracion.insert';
 import { TypeGuardsUtil } from 'src/core/infrastructure/utils/type-guards.util';
+import { EjecutarMigracionResponse } from './dto/migracion.dto';
+import { TipoRespuestaEnum } from 'src/core/domain/enum/tipo-alerta.enum';
 
 @Injectable()
 export class MantenimientoMigracionService {
@@ -19,7 +21,7 @@ export class MantenimientoMigracionService {
     private readonly clienteMigracionRepositoryInyectado: ClienteMigracionRepository,
   ) { }
 
-  async ejecutarMigracion(): Promise<ResponseAPI> {
+  async ejecutarMigracion(): Promise<ResponseAPI<EjecutarMigracionResponse>> {
     this.logger.log('Iniciando proceso de extracción desde MySQL Legacy...');
 
     //simulado
@@ -28,15 +30,15 @@ export class MantenimientoMigracionService {
 
     if (datosLegacyMySQL.length === 0) {
       return {
-        message: 'data migrada',
-        data: {
-          registrosMigradosContador: 0,
-        },
+        message: 'No hay datos para migrar',
+        tipoRespuesta: TipoRespuestaEnum.Success,
+        title: 'Migración',
+        data: { registrosMigradosContador: 0 },
       };
     }
     const totalRegistros = datosLegacyMySQL.length;
 
-    const migracionResponse = await this.dataSource.transaction<ResponseAPI>(
+    const migracionResponse = await this.dataSource.transaction<EjecutarMigracionResponse>(
       async (manager) => {
         const clienteRepository =
           manager.withRepository(this.clienteRepositoryInyectado);
@@ -84,14 +86,16 @@ export class MantenimientoMigracionService {
         }
 
         return {
-          message: 'data migrada con éxito',
-          data: {
-            registrosMigradosContador,
-          },
+          registrosMigradosContador,
         };
       },
     );
-    return migracionResponse;
+    return {
+      message: 'Migración exitosa',
+      tipoRespuesta: TipoRespuestaEnum.Success,
+      title: 'Migración',
+      data: migracionResponse,
+    };
   }
 
   private obtenerDatosFalsosDeMySQL(): ILegacyClienteMySQL[] {

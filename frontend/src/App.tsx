@@ -1,4 +1,4 @@
-// src/App.tsx
+
 import { Toaster } from 'react-hot-toast';
 import { ClientesPage } from './features/clientes/components/clientes-page/clients-page';
 

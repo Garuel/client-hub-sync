@@ -1,7 +1,8 @@
 
 import { apiClient } from '../../../core/api/api-client';
 import { ENDPOINTS } from '../../../core/constants/endpoints.contant';
-import type { ResponseAPI, IPaginatedResponse } from '../../../share/type';
+import { parseResponse } from '../../../core/utils/zod-validator';
+import type { IPaginatedResponse, ResponseAPI } from '../../../share/type';
 import { ClienteListadoResponseSchema } from '../schemas/cliente.schema';
 import type { ClienteInterface } from '../types/cliente.type';
 
@@ -20,14 +21,7 @@ export const ClientesService = {
             params,
         });
 
-        const resultado = ClienteListadoResponseSchema.safeParse(response.data);
-
-        if (!resultado.success) {
-            console.error('Error de contrato con el Backend:', resultado.error.message);
-            throw new Error('Los datos recibidos del servidor no son válidos.');
-        }
-
-        return resultado.data;
+        return parseResponse(ClienteListadoResponseSchema, response.data);
     },
 
     ejecutarEtl: async (): Promise<ResponseAPI> => {

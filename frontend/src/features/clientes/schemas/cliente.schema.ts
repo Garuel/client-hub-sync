@@ -13,7 +13,7 @@ export const ClienteResponseSchema = z.object({
         .object({
             legacyMysqlId: z.number(),
             fechaMigracion: z.coerce.date(),
-            usuarioMigrador: z.string().optional(),
+            usuarioMigrador: z.string().nullable().optional(),
         })
         .nullable()
         .optional(),

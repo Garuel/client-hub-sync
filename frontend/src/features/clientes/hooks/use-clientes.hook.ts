@@ -1,17 +1,19 @@
 import { useState, useEffect, useCallback } from "react";
 import type { ClienteInterface } from "../types/cliente.type";
 import { ClientesService } from "../services/clientes.service";
+import { useSearchParams } from "react-router-dom";
 
 export const useClientes = (initialLimit = 3) => {
   const [clientes, setClientes] = useState<ClienteInterface[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const [search, setSearch] = useState<string>("");
-  const [active, setActive] = useState<boolean>(true);
+  const search = searchParams.get("search") || "";
+  const active = searchParams.get("active") !== "false";
+  const page = Number(searchParams.get("page")) || 1;
 
-  const [page, setPage] = useState<number>(1);
   const [totalItems, setTotalItems] = useState<number>(0);
   const [totalPages, setTotalPages] = useState<number>(1);
 
@@ -46,17 +48,25 @@ export const useClientes = (initialLimit = 3) => {
     cargarClientes();
   }, [cargarClientes]);
 
-  const cambiarPagina = (nuevaPagina: number) => {
-    if (nuevaPagina > 0 && nuevaPagina <= totalPages) {
-      setPage(nuevaPagina);
-    }
-  };
+  const actualizarFiltros = (nuevosFiltros: Record<string, string | null>) => {
+    setSearchParams((prev) => {
+      const params = new URLSearchParams(prev)
 
-  const aplicarBusqueda = (termino: string) => {
-    setSearch(termino);
-    setPage(1);
-  };
+      Object.entries(nuevosFiltros).forEach(([key, value]) => {
+        if (value === null || value === "") {
+          params.delete(key);
+        } else {
+          params.set(key, value);
+        }
+      });
 
+      if (!nuevosFiltros.page) {
+        params.set("page", "1");
+      }
+
+      return params;
+    });
+  };
   return {
     clientes,
     loading,
@@ -66,11 +76,16 @@ export const useClientes = (initialLimit = 3) => {
     totalItems,
     search,
     active,
-    cambiarPagina,
-    aplicarBusqueda,
-    setActive: (val: boolean) => {
-      setActive(val);
-      setPage(1);
+    cambiarPagina: (nuevaPagina: number) => {
+      if (nuevaPagina > 0 && nuevaPagina <= totalPages) {
+        actualizarFiltros({ page: nuevaPagina.toString() });
+      }
+    },
+    aplicarBusqueda: (termino: string) => {
+      actualizarFiltros({ search: termino });
+    },
+    setEstadoActivo: (val: boolean) => {
+      actualizarFiltros({ active: val.toString() });
     },
     refrescar: cargarClientes,
   };

@@ -7,4 +7,5 @@ export const ENDPOINTS = {
     MASTERS: {
         DOCUMENT_TYPES: '/masters/tipo-documento',
     },
-};
+} as const;
+

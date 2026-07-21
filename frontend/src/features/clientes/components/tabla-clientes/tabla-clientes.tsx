@@ -9,10 +9,11 @@ export const TablaClientes = ({
     onCambiarPagina
 }: TablaClientesProps) => {
 
-    // 1. Estado de Carga (Antes era un texto plano feo, ahora tiene un indicador visual)
     if (loading) {
         return (
-            <div className="flex flex-col items-center justify-center p-12 space-y-3 bg-white border border-gray-200 rounded-xl dark:bg-gray-800 dark:border-gray-700">
+            <div
+                aria-live="polite"
+                className="flex flex-col items-center justify-center p-12 space-y-3 bg-white border border-gray-200 rounded-xl dark:bg-gray-800 dark:border-gray-700">
                 <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
                 <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
                     Cargando información desde la base de datos...
@@ -23,11 +24,13 @@ export const TablaClientes = ({
 
     if (clientes.length === 0) {
         return (
-            <div className="p-8 text-center bg-gray-50 border border-gray-200 rounded-xl dark:bg-gray-800/50 dark:border-gray-700">
+            <div aria-live="polite" className="p-8 text-center bg-gray-50 border border-gray-200 rounded-xl dark:bg-gray-800/50 dark:border-gray-700">
                 <p className="text-sm text-gray-500 dark:text-gray-400">No se encontraron clientes con esos filtros.</p>
             </div>
         );
     }
+
+    const paginas = Array.from({ length: totalPages }, (_, i) => i + 1)
 
     return (
         <div className="space-y-4">
@@ -80,6 +83,16 @@ export const TablaClientes = ({
                 </span>
 
                 <div className="flex gap-2">
+
+                    <button
+                        disabled={page === 1}
+                        onClick={() => onCambiarPagina(1)}
+                        className="px-2 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-600"
+                        title="Primera página"
+                    >
+                        &lt;&lt;
+                    </button>
+
                     <button
                         disabled={page === 1}
                         onClick={() => onCambiarPagina(page - 1)}
@@ -88,12 +101,34 @@ export const TablaClientes = ({
                         Anterior
                     </button>
 
+                    {paginas.map((numPagina) => (
+                        <button
+                            key={numPagina}
+                            onClick={() => onCambiarPagina(numPagina)}
+                            className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors cursor-pointer ${page === numPagina
+                                ? 'bg-blue-600 text-white shadow-sm'
+                                : 'text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-600'
+                                }`}
+                        >
+                            {numPagina}
+                        </button>
+                    ))}
+
                     <button
                         disabled={page === totalPages || totalPages === 0}
                         onClick={() => onCambiarPagina(page + 1)}
                         className="px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-600"
                     >
                         Siguiente
+                    </button>
+
+                    <button
+                        disabled={page === totalPages || totalPages === 0}
+                        onClick={() => onCambiarPagina(totalPages)}
+                        className="px-2 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-600"
+                        title="Última página"
+                    >
+                        &gt;&gt;
                     </button>
                 </div>
             </div>

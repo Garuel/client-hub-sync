@@ -18,7 +18,7 @@ export interface TipoDocumento {
 export interface ClienteMigracionInterface {
     legacyMysqlId: number;
     fechaMigracion: Date;
-    usuarioMigrador: string;
+    usuarioMigrador?: string;
 }
 
 

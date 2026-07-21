@@ -1,5 +1,5 @@
-
 import { Toaster } from 'react-hot-toast';
+import { BrowserRouter } from 'react-router-dom';
 import { ClientesPage } from './features/clientes/components/clientes-page/clients-page';
 
 function App() {
@@ -16,9 +16,12 @@ function App() {
         }}
       />
 
-      <main style={{ minHeight: '100vh', backgroundColor: '#fafafa' }}>
-        <ClientesPage />
-      </main>
+
+      <BrowserRouter>
+        <main className="min-h-screen bg-gray-50 dark:bg-gray-900">
+          <ClientesPage />
+        </main>
+      </BrowserRouter>
     </>
   );
 }

@@ -1,26 +1,7 @@
-import type { IListResponse, IPaginatedResponse } from "../../../share/type";
 
-export interface ClienteInterface {
-    publicKey: string;
-    nombreCompleto: string;
-    numeroDocumento: string;
-    activo: boolean;
-    tipoDocumento: TipoDocumento
+import type { components } from '../../../core/types/api.generated';
 
-    clienteMigracion?: ClienteMigracionInterface;
-}
+export type ClienteInterface = components['schemas']['ObtenerClientesResponse'];
+export type TipoDocumento = components['schemas']['TipoDocumentoDto'];
 
-export interface TipoDocumento {
-    id: number;
-    abreviatura: string;
-}
-
-export interface ClienteMigracionInterface {
-    legacyMysqlId: number;
-    fechaMigracion: Date;
-    usuarioMigrador?: string;
-}
-
-
-export type ClientesPaginatedResponse = IPaginatedResponse<ClienteInterface>;
-export type TipoDocumentoListResponse = IListResponse<TipoDocumento>;
+export type ObtenerClientesQueryParams = components['schemas']['ObtenerClientesDto'];

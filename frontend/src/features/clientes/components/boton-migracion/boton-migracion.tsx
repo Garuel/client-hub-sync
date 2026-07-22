@@ -9,7 +9,7 @@ export const BotonMigracion = ({ onMigracionExitosa }: BotonMigracionProps) => {
     const ejecutarMigracion = async () => {
         setProcesando(true);
         try {
-            const response = await ClientesService.ejecutarEtl();
+            const response = await ClientesService.migrarClientes();
             toast.success(response.message || '¡Migración ejecutada con éxito!');
             onMigracionExitosa();
         } catch (error) {

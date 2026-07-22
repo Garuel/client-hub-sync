@@ -18,13 +18,16 @@ export const ClientesService = {
     obtenerClientesMigrados: async (params: ObtenerClientesQueryParams): Promise<IPaginatedResponse<ClienteInterface>> => {
 
         const response = await apiClient.get<IPaginatedResponse<ClienteInterface>>(ENDPOINTS.MIGRATION.CLIENTS, {
-            params,
+            params: {
+                ...params,
+                limit: Math.max(3, params.limit),
+            },
         });
 
         return parseResponse(ClienteListadoResponseSchema, response.data);
     },
 
-    ejecutarEtl: async (): Promise<ResponseAPI> => {
+    migrarClientes: async (): Promise<ResponseAPI> => {
 
         const response = await apiClient.post<ResponseAPI>(ENDPOINTS.MIGRATION.RUN);
         return response.data;

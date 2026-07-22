@@ -1,6 +1,5 @@
 
 import axios from 'axios';
-import { toast } from 'react-hot-toast';
 
 export const apiClient = axios.create({
 
@@ -27,15 +26,12 @@ apiClient.interceptors.response.use(
     (response) => response,
     (error) => {
         if (error.code === 'ECONNABORTED') {
-            toast.error('El servidor está tardando demasiado en responder.');
-            return Promise.reject(error);
+            return Promise.reject(new Error('El servidor está tardando demasiado en responder.'));
         }
+        const rawMessage = error.response?.data?.message || 'Ocurrió un error inesperado';
+        const mensajeFormateado = Array.isArray(rawMessage) ? rawMessage.join(', ') : rawMessage;
 
-        const mensaje = error.response?.data?.message || 'Ocurrió un error inesperado';
-
-        toast.error(`Error del Servidor: ${mensaje}`);
-
-        return Promise.reject(error);
+        return Promise.reject(new Error(mensajeFormateado));
     }
 );
 

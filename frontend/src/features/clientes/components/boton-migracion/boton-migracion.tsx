@@ -28,7 +28,7 @@ export const BotonMigracion = ({ onMigracionExitosa }: BotonMigracionProps) => {
                 className={`
                     inline-flex items-center justify-center px-5 py-2.5 
                     text-sm font-semibold text-white rounded-lg shadow-sm
-                    transition-all duration-200
+                    transition-all duration-200 active:scale-95
                     ${procesando
                         ? 'bg-gray-400 cursor-not-allowed'
                         : 'bg-blue-600 hover:bg-blue-700 active:bg-blue-800 cursor-pointer'

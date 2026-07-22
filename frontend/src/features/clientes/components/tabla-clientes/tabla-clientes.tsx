@@ -1,3 +1,4 @@
+import { TableSkeleton } from "../../../../share/ui/table-skeleton";
 import type { TablaClientesProps } from "./tabla-clientes.types";
 
 export const TablaClientes = ({
@@ -9,18 +10,7 @@ export const TablaClientes = ({
     onCambiarPagina
 }: TablaClientesProps) => {
 
-    if (loading) {
-        return (
-            <div
-                aria-live="polite"
-                className="flex flex-col items-center justify-center p-12 space-y-3 bg-white border border-gray-200 rounded-xl dark:bg-gray-800 dark:border-gray-700">
-                <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                    Cargando información desde la base de datos...
-                </p>
-            </div>
-        );
-    }
+    if (loading) return <TableSkeleton rows={5} cols={4} />;
 
     if (clientes.length === 0) {
         return (
@@ -30,7 +20,7 @@ export const TablaClientes = ({
         );
     }
 
-    const paginas = Array.from({ length: totalPages }, (_, i) => i + 1)
+    const paginas = Array.from({ length: totalPages }, (_, i) => i + 1);
 
     return (
         <div className="space-y-4">
@@ -44,7 +34,7 @@ export const TablaClientes = ({
                         <tr>
                             <th scope="col" className="px-6 py-3">Documento</th>
                             <th scope="col" className="px-6 py-3">Nombre Completo</th>
-                            <th scope="col" className="px-6 py-3">PublicKey</th>
+                            <th scope="col" className="px-6 py-3 hidden sm:table-cell">PublicKey</th>
                             <th scope="col" className="px-6 py-3">Estado</th>
                         </tr>
                     </thead>
@@ -52,7 +42,7 @@ export const TablaClientes = ({
                         {clientes.map((cliente) => (
                             <tr
                                 key={cliente.publicKey}
-                                className="bg-white hover:bg-gray-50 transition-colors dark:bg-gray-800 dark:hover:bg-gray-700/50"
+                                className="bg-white hover:bg-gray-50/80 transition-colors duration-150 dark:bg-gray-800 dark:hover:bg-gray-700/50"
                             >
                                 <td className="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap">
                                     {cliente.numeroDocumento}
@@ -60,7 +50,8 @@ export const TablaClientes = ({
                                 <td className="px-6 py-4 whitespace-nowrap">
                                     {cliente.nombreCompleto}
                                 </td>
-                                <td className="px-6 py-4 font-mono text-xs text-gray-400 dark:text-gray-500 whitespace-nowrap">
+                                {/* Misma regla de ocultamiento para la celda */}
+                                <td className="px-6 py-4 font-mono text-xs text-gray-400 dark:text-gray-500 whitespace-nowrap hidden sm:table-cell">
                                     {cliente.publicKey}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap">
@@ -77,17 +68,17 @@ export const TablaClientes = ({
                 </table>
             </div>
 
-            <div className="flex items-center justify-between pt-2">
+            {/* Paginación */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
                 <span className="text-sm text-gray-600 dark:text-gray-400">
                     Página <span className="font-semibold text-gray-900 dark:text-white">{page}</span> de <span className="font-semibold text-gray-900 dark:text-white">{totalPages}</span>
                 </span>
 
-                <div className="flex gap-2">
-
+                <div className="flex gap-1.5 flex-wrap justify-center">
                     <button
                         disabled={page === 1}
                         onClick={() => onCambiarPagina(1)}
-                        className="px-2 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-600"
+                        className="px-2.5 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150 active:scale-95 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-600"
                         title="Primera página"
                     >
                         &lt;&lt;
@@ -96,7 +87,7 @@ export const TablaClientes = ({
                     <button
                         disabled={page === 1}
                         onClick={() => onCambiarPagina(page - 1)}
-                        className="px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-600"
+                        className="px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150 active:scale-95 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-600"
                     >
                         Anterior
                     </button>
@@ -105,7 +96,7 @@ export const TablaClientes = ({
                         <button
                             key={numPagina}
                             onClick={() => onCambiarPagina(numPagina)}
-                            className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors cursor-pointer ${page === numPagina
+                            className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all duration-150 active:scale-95 cursor-pointer ${page === numPagina
                                 ? 'bg-blue-600 text-white shadow-sm'
                                 : 'text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-600'
                                 }`}
@@ -117,7 +108,7 @@ export const TablaClientes = ({
                     <button
                         disabled={page === totalPages || totalPages === 0}
                         onClick={() => onCambiarPagina(page + 1)}
-                        className="px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-600"
+                        className="px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150 active:scale-95 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-600"
                     >
                         Siguiente
                     </button>
@@ -125,7 +116,7 @@ export const TablaClientes = ({
                     <button
                         disabled={page === totalPages || totalPages === 0}
                         onClick={() => onCambiarPagina(totalPages)}
-                        className="px-2 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-600"
+                        className="px-2.5 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-150 active:scale-95 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-600"
                         title="Última página"
                     >
                         &gt;&gt;

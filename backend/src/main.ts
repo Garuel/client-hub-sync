@@ -1,12 +1,13 @@
-// main.ts (Tu versión personal profesionalizada)
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { ResponseInterceptor } from './core/infrastructure/interceptors/response.interceptor';
 import { DatabaseExceptionFilter } from './core/infrastructure/filters/database.exception.filters';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
+
   const app = await NestFactory.create(AppModule);
   const config = app.get(ConfigService);
 
@@ -48,6 +49,19 @@ async function bootstrap() {
 
   app.useGlobalInterceptors(new ResponseInterceptor());
   app.useGlobalFilters(new DatabaseExceptionFilter());
+
+  const SWAGGER_TITLE = 'Client Sync Transformer API';
+  const SWAGGER_VERSION = '1.0';
+
+  const swaggerConfig = new DocumentBuilder()
+    .setTitle(SWAGGER_TITLE)
+    .setDescription('API de integración y migración de clientes')
+    .setVersion(SWAGGER_VERSION)
+    .build();
+
+  const document = SwaggerModule.createDocument(app, swaggerConfig);
+  SwaggerModule.setup('docs', app, document);
+
 
 
   await app.listen(PORT);

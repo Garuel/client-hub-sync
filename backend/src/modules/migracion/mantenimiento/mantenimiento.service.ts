@@ -9,11 +9,12 @@ import { IClienteMigracionInsert } from 'src/core/database/repositories/core/cli
 import { TypeGuardsUtil } from 'src/core/infrastructure/utils/type-guards.util';
 import { EjecutarMigracionResponse } from './dto/migracion.dto';
 import { TipoRespuestaEnum } from 'src/core/domain/enum/tipo-alerta.enum';
+import { CHUNK_SIZE } from './constants/migracion-chunk-size.constant';
 
 @Injectable()
 export class MantenimientoMigracionService {
   private readonly logger = new Logger(MantenimientoMigracionService.name);
-  private readonly CHUNK_SIZE = 500;
+
 
   constructor(
     private readonly dataSource: DataSource,
@@ -47,9 +48,9 @@ export class MantenimientoMigracionService {
 
         let registrosMigradosContador = 0;
 
-        for (let i = 0; i < totalRegistros; i += this.CHUNK_SIZE) {
-          const chunk = datosLegacyMySQL.slice(i, i + this.CHUNK_SIZE);
-          this.logger.log(`Procesando lote: registros del ${i + 1} al ${Math.min(i + this.CHUNK_SIZE, totalRegistros)}`);
+        for (let i = 0; i < totalRegistros; i += CHUNK_SIZE) {
+          const chunk = datosLegacyMySQL.slice(i, i + CHUNK_SIZE);
+          this.logger.log(`Procesando lote: registros del ${i + 1} al ${Math.min(i + CHUNK_SIZE, totalRegistros)}`);
 
           const { clientesTransformados } = TransformarDatosUtil.migracion(chunk);
           const clientesInsertDto = clientesTransformados.map(item => item.cliente);

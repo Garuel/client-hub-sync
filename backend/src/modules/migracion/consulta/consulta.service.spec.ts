@@ -36,12 +36,7 @@ describe('ConsultaMigracionService', () => {
 
     repository.findPaginado.mockResolvedValue([mockClientes, 1]);
 
-    const result = await service.obtenerClientes({
-      search: '',
-      active: true,
-      offset: 0,
-      limit: 3,
-    });
+    const result = await service.obtenerClientes({} as any);
 
     expect(repository.findPaginado).toHaveBeenCalledWith({
       search: undefined,

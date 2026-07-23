@@ -1,5 +1,5 @@
 import { ClienteEntity } from 'src/core/database/entities';
-import { ObtenerClientesResponse } from '../dto/obtener-clientes.dto';
+import { ObtenerClientesResponse } from '../../dto/obtener-clientes.dto';
 
 export class ClienteMapper {
   static toResponse(entities: ClienteEntity[]): ObtenerClientesResponse[] {

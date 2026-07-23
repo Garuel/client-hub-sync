@@ -1,6 +1,6 @@
 import { v4 } from 'uuid';
-import { ILegacyClienteMySQL } from '../interfaces/legacy-cliente-mysql.interface';
-import { DatosTransformadosInterface, ITransformarDatoMigracionResponse } from '../interfaces/transformar-datos-migracion-response.interface';
+import { ILegacyClienteMySQL } from '../../interfaces/legacy-cliente-mysql.interface';
+import { DatosTransformadosInterface, ITransformarDatoMigracionResponse } from '../../interfaces/transformar-datos-migracion-response.interface';
 
 export namespace TransformarDatosUtil {
   export function migracion(data: ILegacyClienteMySQL[]): ITransformarDatoMigracionResponse {

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ClienteRepository } from 'src/core/database/repositories/core/cliente/cliente.repository';
 import { ClienteFiltros } from 'src/core/domain/interfaces/repositories/cliente-filtros.interface';
 import { ObtenerClientesDto, ObtenerClientesResponse } from './dto/obtener-clientes.dto';
-import { ClienteMapper } from './mapper/cliente.mapper';
+import { ClienteMapper } from './mapper/cliente/cliente.mapper';
 import { IServicePaginatedResult } from 'src/core/domain/interfaces/service-response.interface';
 
 @Injectable()

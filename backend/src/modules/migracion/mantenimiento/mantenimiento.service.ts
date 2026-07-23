@@ -3,7 +3,7 @@ import { ClienteRepository } from 'src/core/database/repositories/core/cliente/c
 import { ResponseAPI } from 'src/core/domain/interfaces/response-api.interface';
 import { DataSource } from 'typeorm';
 import { ILegacyClienteMySQL } from './interfaces/legacy-cliente-mysql.interface';
-import { TransformarDatosUtil } from './utils/transformar-datos-migracion.util';
+import { TransformarDatosUtil } from './utils/transformar-datos-migracion/transformar-datos-migracion.util';
 import { ClienteMigracionRepository } from 'src/core/database/repositories/core/cliente-migracion/cliente-migracion.repository';
 import { IClienteMigracionInsert } from 'src/core/database/repositories/core/cliente-migracion/insert/cliente-migracion.insert';
 import { TypeGuardsUtil } from 'src/core/infrastructure/utils/type-guards.util';

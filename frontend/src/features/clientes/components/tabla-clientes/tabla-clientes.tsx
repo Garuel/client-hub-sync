@@ -32,10 +32,10 @@ export const TablaClientes = ({
                 <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400 border-collapse">
                     <thead className="text-xs font-semibold uppercase text-gray-700 bg-gray-50 border-b border-gray-200 dark:bg-gray-700/50 dark:text-gray-300 dark:border-gray-700">
                         <tr>
-                            <th scope="col" className="px-6 py-3">Documento</th>
-                            <th scope="col" className="px-6 py-3">Nombre Completo</th>
-                            <th scope="col" className="px-6 py-3 hidden sm:table-cell">PublicKey</th>
-                            <th scope="col" className="px-6 py-3">Estado</th>
+                            <th scope="col" role="columnheader" className="px-6 py-3">Documento</th>
+                            <th scope="col" role="columnheader" className="px-6 py-3">Nombre Completo</th>
+                            <th scope="col" role="columnheader" className="px-6 py-3 hidden sm:table-cell">PublicKey</th>
+                            <th scope="col" role="columnheader" className="px-6 py-3">Estado</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
@@ -50,7 +50,6 @@ export const TablaClientes = ({
                                 <td className="px-6 py-4 whitespace-nowrap">
                                     {cliente.nombreCompleto}
                                 </td>
-                                {/* Misma regla de ocultamiento para la celda */}
                                 <td className="px-6 py-4 font-mono text-xs text-gray-400 dark:text-gray-500 whitespace-nowrap hidden sm:table-cell">
                                     {cliente.publicKey}
                                 </td>
@@ -70,9 +69,11 @@ export const TablaClientes = ({
 
             {/* Paginación */}
             <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
-                <span className="text-sm text-gray-600 dark:text-gray-400">
-                    Página <span className="font-semibold text-gray-900 dark:text-white">{page}</span> de <span className="font-semibold text-gray-900 dark:text-white">{totalPages}</span>
-                </span>
+                <nav aria-label="Paginación de clientes" className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600 dark:text-gray-400">
+                        Página <span className="font-semibold">{page}</span> de <span className="font-semibold">{totalPages}</span>
+                    </span>
+                </nav>
 
                 <div className="flex gap-1.5 flex-wrap justify-center">
                     <button

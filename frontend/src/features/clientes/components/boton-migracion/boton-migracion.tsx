@@ -25,6 +25,7 @@ export const BotonMigracion = ({ onMigracionExitosa }: BotonMigracionProps) => {
             <button
                 onClick={ejecutarMigracion}
                 disabled={procesando}
+                aria-busy={procesando}
                 className={`
                     inline-flex items-center justify-center px-5 py-2.5 
                     text-sm font-semibold text-white rounded-lg shadow-sm

@@ -7,9 +7,12 @@ interface TableSkeletonProps {
 export const TableSkeleton = ({ rows = 5, cols = 4 }: TableSkeletonProps) => {
     return (
         <div
-            aria-hidden="true"
+            role="status"
+            aria-label="Cargando tabla..."
             className="w-full overflow-hidden bg-white border border-gray-200 rounded-xl shadow-sm dark:bg-gray-800 dark:border-gray-700 animate-pulse"
         >
+
+            <span className="sr-only">Cargando...</span>
 
             <div className="h-10 bg-gray-100 dark:bg-gray-700/50 border-b border-gray-200 dark:border-gray-700" />
 

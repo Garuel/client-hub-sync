@@ -3,9 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ModulesModule } from './modules/modules.module';
 import { DatabaseModule } from './core/database/database.module';
-import { ClienteEntity, TipoDocumentoEntity } from './core/database/entities';
 import { envValidationSchema } from './core/infrastructure/config/validator.config';
-import { ClienteMigracionEntity } from './core/database/entities/core/cliente-migracion.entity';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -20,7 +18,7 @@ import { ClienteMigracionEntity } from './core/database/entities/core/cliente-mi
         username: configService.get('DATABASE_USERNAME'),
         password: configService.get('DATABASE_PASSWORD'),
         database: configService.get('DATABASE_NAME'),
-        entities: [ClienteEntity, TipoDocumentoEntity, ClienteMigracionEntity],
+        autoLoadEntities: true,
         migrations: [__dirname + '/**/migrations/**/*{.js,.ts}'],
         cli: {
           migrationsDir: __dirname + '/migrations',

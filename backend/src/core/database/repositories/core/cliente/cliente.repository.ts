@@ -1,16 +1,28 @@
+import { Injectable } from '@nestjs/common';
 import { ClienteFiltros } from 'src/core/domain/interfaces/repositories/cliente-filtros.interface';
-import { DataSource, InsertResult, Repository, SelectQueryBuilder } from 'typeorm';
+import { DataSource, EntityManager, InsertResult, Repository, SelectQueryBuilder } from 'typeorm';
 import { ClienteEntity } from '../../../entities/core/cliente.entity';
 import { IClienteInsert } from './insert/cliente.insert';
-import { ClienteFilters } from './utils/cliente-filters.util';
 
-export class ClienteRepository extends Repository<ClienteEntity> {
-  constructor(connection: DataSource) {
-    super(ClienteEntity, connection.createEntityManager());
+@Injectable()
+export class ClienteRepository {
+  // constructor(connection: DataSource | EntityManager) {
+  //   super(
+  //     ClienteEntity,
+  //     typeof (connection as any).createEntityManager === 'function'
+  //       ? (connection as DataSource).createEntityManager()
+  //       : (connection as EntityManager)
+  //   );
+  // }
+  constructor(private readonly dataSource: DataSource) { }
+  private getRepo(manager?: EntityManager): Repository<ClienteEntity> {
+    return manager
+      ? manager.getRepository(ClienteEntity)
+      : this.dataSource.getRepository(ClienteEntity);
   }
 
-  async insert(clienteInsert: IClienteInsert[]): Promise<InsertResult> {
-    return this
+  async insert(clienteInsert: IClienteInsert[], manager?: EntityManager): Promise<InsertResult> {
+    return this.getRepo(manager)
       .createQueryBuilder()
       .insert()
       .into(ClienteEntity)
@@ -20,8 +32,8 @@ export class ClienteRepository extends Repository<ClienteEntity> {
   }
 
 
-  private getBaseQuery(filtros: ClienteFiltros): SelectQueryBuilder<ClienteEntity> {
-    const query = this
+  private getBaseQuery(filtros: ClienteFiltros, manager?: EntityManager): SelectQueryBuilder<ClienteEntity> {
+    const query = this.getRepo(manager)
       .createQueryBuilder('cliente')
       .select([
         'cliente.id',
@@ -63,15 +75,15 @@ export class ClienteRepository extends Repository<ClienteEntity> {
   }
 
 
-  async findPaginado(filtros: ClienteFiltros): Promise<[ClienteEntity[], number]> {
-    return this.getBaseQuery(filtros)
+  async findPaginado(filtros: ClienteFiltros, manager?: EntityManager): Promise<[ClienteEntity[], number]> {
+    return this.getBaseQuery(filtros, manager)
       .skip(filtros.offset)
       .take(filtros.limit)
       .getManyAndCount();
   }
 
 
-  async findSinPaginar(filtros: ClienteFiltros): Promise<ClienteEntity[]> {
-    return this.getBaseQuery(filtros).getMany();
+  async findSinPaginar(filtros: ClienteFiltros, manager?: EntityManager): Promise<ClienteEntity[]> {
+    return this.getBaseQuery(filtros, manager).getMany();
   }
 }

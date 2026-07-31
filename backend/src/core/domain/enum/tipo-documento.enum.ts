@@ -2,14 +2,14 @@ export enum TipoDocumentoEnum {
   DNI = 1,
   CE = 2,
   RUC = 3,
-  Pasaporte = 4,
-  Otros = 5,
+  PASAPORTE = 4,
+  OTROS = 5,
 }
 
-export enum TipoDocumentoStringEnum {
-  DNI = 'DNI',
-  CE = 'CE',
-  RUC = 'RUC',
-  Pasaporte = 'Pasaporte',
-  Otros = 'Otros',
-}
+export const TipoDocumentoLabel: Record<number, string> = {
+  [TipoDocumentoEnum.DNI]: 'DNI',
+  [TipoDocumentoEnum.CE]: 'CE',
+  [TipoDocumentoEnum.RUC]: 'RUC',
+  [TipoDocumentoEnum.PASAPORTE]: 'Pasaporte',
+  [TipoDocumentoEnum.OTROS]: 'Otros',
+};

@@ -18,8 +18,8 @@ export class MantenimientoMigracionService {
 
   constructor(
     private readonly dataSource: DataSource,
-    private readonly clienteRepositoryInyectado: ClienteRepository,
-    private readonly clienteMigracionRepositoryInyectado: ClienteMigracionRepository,
+    private readonly clienteRepository: ClienteRepository,
+    private readonly clienteMigracionRepository: ClienteMigracionRepository,
   ) { }
 
   async ejecutarMigracion(): Promise<ResponseAPI<EjecutarMigracionResponse>> {
@@ -41,10 +41,6 @@ export class MantenimientoMigracionService {
 
     const migracionResponse = await this.dataSource.transaction<EjecutarMigracionResponse>(
       async (manager) => {
-        const clienteRepository =
-          manager.withRepository(this.clienteRepositoryInyectado);
-        const clienteMigracionRepository =
-          manager.withRepository(this.clienteMigracionRepositoryInyectado);
 
         let registrosMigradosContador = 0;
 
@@ -55,7 +51,7 @@ export class MantenimientoMigracionService {
           const { clientesTransformados } = TransformarDatosUtil.migracion(chunk);
           const clientesInsertDto = clientesTransformados.map(item => item.cliente);
 
-          const insertResult = await clienteRepository.insert(clientesInsertDto);
+          const insertResult = await this.clienteRepository.insert(clientesInsertDto, manager);
 
           const registrosInsertados: { id: number; publicKey: string }[] = insertResult.raw;
 
@@ -81,7 +77,7 @@ export class MantenimientoMigracionService {
             .filter(TypeGuardsUtil.IsNotNull);
 
           if (clienteMigracionInsert.length > 0) {
-            await clienteMigracionRepository.insert(clienteMigracionInsert);
+            await this.clienteMigracionRepository.insert(clienteMigracionInsert, manager);
             registrosMigradosContador += clienteMigracionInsert.length;
           }
         }

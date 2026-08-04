@@ -1,4 +1,4 @@
-// src/core/constants/endpoints.constant.ts
+
 export const ENDPOINTS = {
     MIGRATION: {
         CLIENTS: '/migration/clients',
@@ -7,5 +7,11 @@ export const ENDPOINTS = {
     MASTERS: {
         DOCUMENT_TYPES: '/masters/tipo-documento',
     },
+    AUTH: {
+        login: 'auth/login',
+        preRegister: 'auth/pre-register',
+        register: 'auth/pre-register',
+        refreshToken: 'auth/refresh-token'
+    }
 } as const;
 

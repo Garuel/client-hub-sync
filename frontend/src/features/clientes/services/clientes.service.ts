@@ -1,26 +1,19 @@
-
 import { apiClient } from '../../../core/api/api-client';
 import { ENDPOINTS } from '../../../core/constants/endpoints.contant';
 import { parseResponse } from '../../../core/utils/zod-validator';
 import type { IPaginatedResponse, ResponseAPI } from '../../../share/type';
-import { ClienteListadoResponseSchema } from '../schemas/cliente.schema';
-import type { ClienteInterface } from '../types/cliente.type';
+import { ClienteListadoResponseSchema, type ClienteInterface } from '../schemas/cliente.schema';
+import type { components } from '../../../core/types/api.generated';
 
-export interface ObtenerClientesQueryParams {
-    page: number;
-    limit: number;
-    search?: string;
-    active?: boolean;
-    migrado?: boolean;
-}
+export type ObtenerClientesQueryParams = components['schemas']['ObtenerClientesDto'];
 
 export const ClientesService = {
     obtenerClientesMigrados: async (params: ObtenerClientesQueryParams): Promise<IPaginatedResponse<ClienteInterface>> => {
 
-        const response = await apiClient.get<IPaginatedResponse<ClienteInterface>>(ENDPOINTS.MIGRATION.CLIENTS, {
+        const response = await apiClient.get(ENDPOINTS.MIGRATION.CLIENTS, {
             params: {
                 ...params,
-                limit: Math.max(3, params.limit),
+                limit: Math.max(3, params.limit || 10),
             },
         });
 
@@ -28,7 +21,6 @@ export const ClientesService = {
     },
 
     migrarClientes: async (): Promise<ResponseAPI> => {
-
         const response = await apiClient.post<ResponseAPI>(ENDPOINTS.MIGRATION.RUN);
         return response.data;
     },

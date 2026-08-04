@@ -11,7 +11,7 @@ export const apiClient = axios.create({
 
 apiClient.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('accessToken');
         if (token && config.headers) {
             config.headers.Authorization = `Bearer ${token}`;
         }
@@ -27,6 +27,10 @@ apiClient.interceptors.response.use(
     (error) => {
         if (error.code === 'ECONNABORTED') {
             return Promise.reject(new Error('El servidor está tardando demasiado en responder.'));
+        }
+        if (error.response?.status === 401) {
+            localStorage.removeItem('accessToken');
+            window.location.href = '/login';
         }
         const rawMessage = error.response?.data?.message || 'Ocurrió un error inesperado';
         const mensajeFormateado = Array.isArray(rawMessage) ? rawMessage.join(', ') : rawMessage;

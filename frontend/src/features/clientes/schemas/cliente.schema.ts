@@ -1,4 +1,6 @@
 import { z } from 'zod';
+import { buildPaginatedSchema } from '../../../core/schemas/pagination.schema';
+import type { components } from '../../../core/types/api.generated';
 
 export const ClienteResponseSchema = z.object({
     publicKey: z.string(),
@@ -19,15 +21,7 @@ export const ClienteResponseSchema = z.object({
         .optional(),
 });
 
-export const ClienteListadoResponseSchema = z.object({
-    success: z.boolean(),
-    message: z.string().optional(),
-    data: z.array(ClienteResponseSchema),
-    meta: z.object({
-        totalItems: z.number(),
-        itemCount: z.number(),
-        itemsPerPage: z.number(),
-        totalPages: z.number(),
-        currentPage: z.number(),
-    }),
-});
+export const ClienteListadoResponseSchema = buildPaginatedSchema(ClienteResponseSchema);
+export type ClienteInterface = z.infer<typeof ClienteResponseSchema>;
+export type ObtenerClientesQueryParams = components['schemas']['ObtenerClientesDto'];
+export type TipoDocumento = components['schemas']['TipoDocumentoDto'];

@@ -4,6 +4,74 @@
  */
 
 export interface paths {
+    "/api/client-sync/auth/pre-register": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Pre register por email de usuario */
+        post: operations["AuthController_preRegister"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/client-sync/auth/register": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Registrar usuario */
+        post: operations["AuthController_register"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/client-sync/auth/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Login de usuario */
+        post: operations["AuthController_login"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/client-sync/auth/refresh-token": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Registrar usuario */
+        post: operations["AuthController_refreshToken"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/client-sync/migration/run": {
         parameters: {
             query?: never;
@@ -13,6 +81,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
+        /** Migrar clientes */
         post: operations["MantenimientoMigracionController_ejecutarEtl"];
         delete?: never;
         options?: never;
@@ -41,6 +110,112 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        ResponseApiDto: {
+            /** @example Operación realizada con éxito */
+            message: string;
+            /** @example Migración */
+            title?: string;
+            /**
+             * @example 1
+             * @enum {number}
+             */
+            tipoRespuesta?: 1 | 2 | 3 | 4 | 5;
+            data?: Record<string, never>;
+        };
+        PreRegisterDto: {
+            /**
+             * @description Email para guaradar pre registro
+             * @example sebastian@gmail.com
+             */
+            email: string;
+        };
+        RegisterDto: {
+            /**
+             * @description Token guardado en pre registro
+             * @example R48t1HBFvXq4RzQiy2S2BLDS6ZOEhkIZAOGXFnWw4WTGGm88
+             */
+            tokenPreRegistro: string;
+            /**
+             * @description usuario nuevo
+             * @example usuario123
+             */
+            username: string;
+            /**
+             * @description contraseña para nuevo usuario
+             * @example R48t1HBFvXq4RzQi
+             */
+            password: string;
+            /**
+             * @description nombres del nuevo usuario
+             * @example Gabriel
+             */
+            nombres: string;
+            /**
+             * @description apellido paterno del nuevo usuario
+             * @example Domenack
+             */
+            apellidoPaterno: string;
+            /**
+             * @description apellido materno del nuevo usuario
+             * @example Domenack
+             */
+            apellidoMaterno: string;
+            /**
+             * @description numero de documento del nuevo usuario
+             * @example 12345698
+             */
+            numeroDocumento: string;
+            /**
+             * @description tipo de documento enum
+             * @example 1
+             */
+            idTipoDocumento: number;
+            /**
+             * @description email del nuevo usuario
+             * @example domenack@gmail.com
+             */
+            email: string;
+            /**
+             * @description número de telefono para el nuevo usuario
+             * @example 950147852
+             */
+            numeroTelefono: string;
+            /**
+             * Format: date-time
+             * @description Fecha en que el usuario dejará de estar activo
+             * @example 2026-07-31
+             */
+            fechaFinal: string;
+        };
+        AuthTokensDto: {
+            /** @description Token de acceso JWT */
+            accessToken: string;
+            /** @description Token para refrescar la sesión */
+            refreshToken: string;
+        };
+        LoginDto: {
+            /**
+             * @description usuario del usuario
+             * @example sebastiandomenack
+             */
+            username: string;
+            /** @description contraseña del usuario */
+            password: string;
+        };
+        RefreshTokenDto: {
+            /**
+             * @description Refresh antiguo para refrescar nuevo acceso
+             * @example R48t1HBFvXq4RzQiy2S2BLDS6ZOEhkIZAOGXFnWw4WTGGm88
+             */
+            oldRefreshToken: string;
+        };
+        EjecutarMigracionResponse: {
+            /**
+             * @description Cantidad de registros procesados
+             * @example 150
+             */
+            registrosMigradosContador: number;
+        };
         ObtenerClientesDto: {
             /**
              * @description Cantidad de elementos por página
@@ -105,6 +280,105 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    AuthController_preRegister: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PreRegisterDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResponseApiDto"] & {
+                        data?: string;
+                    };
+                };
+            };
+        };
+    };
+    AuthController_register: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RegisterDto"];
+            };
+        };
+        responses: {
+            /** @description Operación exitosa sin retorno de datos */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResponseApiDto"];
+                };
+            };
+        };
+    };
+    AuthController_login: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LoginDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResponseApiDto"] & {
+                        data?: components["schemas"]["AuthTokensDto"];
+                    };
+                };
+            };
+        };
+    };
+    AuthController_refreshToken: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RefreshTokenDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResponseApiDto"] & {
+                        data?: components["schemas"]["AuthTokensDto"];
+                    };
+                };
+            };
+        };
+    };
     MantenimientoMigracionController_ejecutarEtl: {
         parameters: {
             query?: never;
@@ -118,7 +392,11 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["ResponseApiDto"] & {
+                        data?: components["schemas"]["EjecutarMigracionResponse"];
+                    };
+                };
             };
         };
     };
@@ -148,7 +426,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ObtenerClientesResponse"][];
+                    "application/json": components["schemas"]["ObtenerClientesResponse"];
                 };
             };
         };

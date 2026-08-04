@@ -1,4 +1,5 @@
-import type { ClienteInterface } from "../../types/cliente.type";
+import type { ClienteInterface } from "../../schemas/cliente.schema";
+
 
 export interface TablaClientesProps {
     clientes: ClienteInterface[];

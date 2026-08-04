@@ -57,6 +57,7 @@ async function bootstrap() {
     .setTitle(SWAGGER_TITLE)
     .setDescription('API de integración y migración de clientes')
     .setVersion(SWAGGER_VERSION)
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, swaggerConfig);

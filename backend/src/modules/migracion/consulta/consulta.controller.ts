@@ -1,8 +1,11 @@
-import { Controller, Get, Query, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiExtraModels, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/core/infrastructure/auth/guards/jwt.guard';
 import { ObtenerClientesDto, ObtenerClientesResponse } from '../consulta/dto/obtener-clientes.dto';
 import { ConsultaMigracionService } from './consulta.service';
-import { ApiExtraModels, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('migration')
 export class ConsultaMigracionController {
     constructor(
@@ -16,7 +19,6 @@ export class ConsultaMigracionController {
         status: 200,
         description: 'Lista paginada de clientes',
         type: ObtenerClientesResponse,
-        isArray: true,
     })
     async obtenerClientes(
         @Query()

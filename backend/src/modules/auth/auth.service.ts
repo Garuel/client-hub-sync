@@ -5,14 +5,14 @@ import { UsuarioEntity } from 'src/core/database/entities/auth';
 import { PreRegisterRepository, UsuarioDatosRepository, UsuarioRefreshTokenRepository, UsuarioRepository } from 'src/core/database/repositories/auth';
 import { EstadoUsuarioEnum } from 'src/core/domain/enum/estado-usuario.enum';
 import { TipoDocumentoLabel } from 'src/core/domain/enum/tipo-documento.enum';
-import { ResponseAPI } from 'src/core/domain/interfaces/response-api.interface';
 import { EncryptUtil } from 'src/core/infrastructure/utils/encrypt.util';
 import { DataSource } from 'typeorm';
 import { LoginDto, UsuarioInfoToken } from './dto/login.dto';
 import { PreRegisterDto } from './dto/pre-register.dto';
 import { RefreshTokenDto } from './dto/refresh.dto';
 import { RegisterDto } from './dto/register.dto';
-import { AuthTokensInterface } from './interfaces/tokens.interface';
+import { ResponseApiDto } from 'src/core/domain/classes/base-response-api.class';
+import { AuthTokensDto } from './dto/tokens.dto';
 
 @Injectable()
 export class AuthService {
@@ -27,7 +27,7 @@ export class AuthService {
         private readonly dataSource: DataSource
     ) { }
 
-    async preRegister(dto: PreRegisterDto): Promise<ResponseAPI<string>> {
+    async preRegister(dto: PreRegisterDto): Promise<ResponseApiDto<string>> {
         this.logger.verbose('PRE REGISTER')
         const { email, ip, userAgent } = dto;
 
@@ -72,12 +72,12 @@ export class AuthService {
         ]);
 
         return {
-            message: 'Se ha enviado la invitación al correo electrónico proporcionado.',
+            message: 'Se ha enviado la invitación al correo electrónico proporcionado',
             data: tokenInvitacion,
         };
     }
 
-    async register(dto: RegisterDto): Promise<ResponseAPI> {
+    async register(dto: RegisterDto): Promise<ResponseApiDto<{}>> {
         this.logger.verbose('REGISTER')
 
         this.logger.log('Verificando si ya existe pre registro, llamando pre registro repository')
@@ -152,11 +152,11 @@ export class AuthService {
         });
 
         return {
-            message: 'Usuario registrado exitosamente.',
+            message: 'Usuario registrado exitosamente',
         };
     }
 
-    async login(dto: LoginDto, ip: string): Promise<ResponseAPI<AuthTokensInterface>> {
+    async login(dto: LoginDto, ip: string): Promise<ResponseApiDto<AuthTokensDto>> {
         this.logger.verbose('LOGIN')
 
         this.logger.log('Valdiando credenciales')
@@ -176,7 +176,7 @@ export class AuthService {
         );
 
         return {
-            message: 'Inicio de sesión exitoso.',
+            message: 'Inicio de sesión exitoso',
             data: tokens,
         };
     }
@@ -225,7 +225,7 @@ export class AuthService {
     }
 
 
-    private async generarTokens(payload: UsuarioInfoToken): Promise<AuthTokensInterface> {
+    private async generarTokens(payload: UsuarioInfoToken): Promise<AuthTokensDto> {
         const jwtSecret = this.configService.get<string>('JWT_SECRET');
         const refreshSecret = this.configService.get<string>('JWT_REFRESH_SECRET');
 
@@ -271,7 +271,7 @@ export class AuthService {
 
 
 
-    async refreshToken(dto: RefreshTokenDto, ip?: string): Promise<ResponseAPI<AuthTokensInterface>> {
+    async refreshToken(dto: RefreshTokenDto, ip?: string): Promise<ResponseApiDto<AuthTokensDto>> {
         const payloadRefresh = this.verificarRefreshTokenJwt(dto.oldRefreshToken);
 
         const tokenHash = EncryptUtil.hashToken(dto.oldRefreshToken);
@@ -296,7 +296,7 @@ export class AuthService {
         await this.guardarRefreshToken(usuario.id, nuevosTokens.refreshToken, ip);
 
         return {
-            message: 'Token renovado con éxito.',
+            message: 'Token renovado con éxito',
             data: nuevosTokens,
         };
     }

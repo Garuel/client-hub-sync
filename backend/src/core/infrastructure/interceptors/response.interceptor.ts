@@ -1,16 +1,16 @@
-// infrastructure/interceptors/response.interceptor.ts
+
 import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { ResponseApiDto } from 'src/core/domain/classes/base-response-api.class';
 import { IListResponse, IPaginatedResponse } from 'src/core/domain/interfaces/listados.interface';
-import { ResponseAPI } from 'src/core/domain/interfaces/response-api.interface';
 
 @Injectable()
-export class ResponseInterceptor implements NestInterceptor<any, IPaginatedResponse<any> | IListResponse<any> | ResponseAPI<any>> {
+export class ResponseInterceptor implements NestInterceptor<any, IPaginatedResponse<any> | IListResponse<any> | ResponseApiDto<any>> {
     intercept(
         context: ExecutionContext,
         next: CallHandler
-    ): Observable<IPaginatedResponse<any> | IListResponse<any> | ResponseAPI<any>> {
+    ): Observable<IPaginatedResponse<any> | IListResponse<any> | ResponseApiDto<any>> {
         return next.handle().pipe(
             map((response) => {
 

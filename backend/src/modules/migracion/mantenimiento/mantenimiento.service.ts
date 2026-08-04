@@ -1,6 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ClienteRepository } from 'src/core/database/repositories/core/cliente/cliente.repository';
-import { ResponseAPI } from 'src/core/domain/interfaces/response-api.interface';
 import { DataSource } from 'typeorm';
 import { ILegacyClienteMySQL } from './interfaces/legacy-cliente-mysql.interface';
 import { TransformarDatosUtil } from './utils/transformar-datos-migracion/transformar-datos-migracion.util';
@@ -10,6 +9,7 @@ import { TypeGuardsUtil } from 'src/core/infrastructure/utils/type-guards.util';
 import { EjecutarMigracionResponse } from './dto/migracion.dto';
 import { TipoRespuestaEnum } from 'src/core/domain/enum/tipo-alerta.enum';
 import { CHUNK_SIZE } from './constants/migracion-chunk-size.constant';
+import { ResponseApiDto } from 'src/core/domain/classes/base-response-api.class';
 
 @Injectable()
 export class MantenimientoMigracionService {
@@ -22,7 +22,7 @@ export class MantenimientoMigracionService {
     private readonly clienteMigracionRepository: ClienteMigracionRepository,
   ) { }
 
-  async ejecutarMigracion(): Promise<ResponseAPI<EjecutarMigracionResponse>> {
+  async ejecutarMigracion(): Promise<ResponseApiDto<EjecutarMigracionResponse>> {
     this.logger.log('Iniciando proceso de extracción desde MySQL Legacy...');
 
     //simulado

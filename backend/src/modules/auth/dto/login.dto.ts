@@ -1,12 +1,15 @@
-import { IsDefined, IsString, IsUUID, MinLength } from "class-validator";
+import { ApiProperty } from "@nestjs/swagger";
+import { IsDefined, IsString, MinLength } from "class-validator";
 
 export class LoginDto {
+  @ApiProperty({ description: 'usuario del usuario', example: 'sebastiandomenack' })
   @IsDefined({
     message: "El usuario es requerido",
   })
   @IsString()
   username!: string;
 
+  @ApiProperty({ description: 'contraseña del usuario' })
   @IsString()
   @MinLength(6, { message: "El password debe tener al menos 6 caracteres" })
   password!: string;

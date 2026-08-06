@@ -1,9 +1,9 @@
 import { useClientes } from "../../hooks/use-clientes.hook";
-import { BotonMigracion } from "../boton-migracion/boton-migracion";
-import { BuscadorClientes } from "../buscador-clientes/buscador-clientes";
-import { TablaClientes } from "../tabla-clientes/tabla-clientes";
+import { BotonMigracion } from "../../components/boton-migracion/boton-migracion";
+import { BuscadorClientes } from "../../components/buscador-clientes/buscador-clientes";
+import { TablaClientes } from "../../components/tabla-clientes/tabla-clientes";
 
-export const ClientesPage = () => {
+export const ClienteListadoPage = () => {
     const {
         clientes, loading, page, totalPages, totalItems,
         search, active, cambiarPagina, aplicarBusqueda, setEstadoActivo

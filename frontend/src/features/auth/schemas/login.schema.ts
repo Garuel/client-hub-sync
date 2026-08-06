@@ -31,3 +31,12 @@ export const LoginResponseSchema = buildApiResponseSchema(AuthTokensSchema);
 
 export type AuthTokens = z.infer<typeof AuthTokensSchema>;
 export type LoginResponse = z.infer<typeof LoginResponseSchema>;
+
+
+export const LoginRequestSchema = z.object({
+    username: z.string().min(1, 'El usuario es obligatorio'),
+    password: z.string().min(1, 'La contraseña es obligatoria'),
+})
+
+
+export type LoginRequest = z.infer<typeof LoginRequestSchema>

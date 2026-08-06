@@ -14,11 +14,13 @@
     "generate:types": "openapi-typescript http://localhost:5523/docs -o src/core/types/api.generated.ts"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.7.1",
     "@tanstack/react-query": "^5.101.4",
     "axios": "^1.18.1",
     "lucide-react": "^1.23.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
+    "react-hook-form": "^7.84.0",
     "react-hot-toast": "^2.6.0",
     "react-router-dom": "^7.18.1",
     "zod": "^4.4.3"

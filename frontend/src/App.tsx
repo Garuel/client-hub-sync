@@ -1,10 +1,11 @@
 import { Toaster } from 'react-hot-toast';
-import { BrowserRouter } from 'react-router-dom';
-import { ClientesPage } from './features/clientes/components/clientes-page/clients-page';
+import { RouterProvider } from 'react-router-dom';
+import { AuthProvider } from './features/auth/context/auth.context';
+import { router } from './core/router/app.router';
 
 function App() {
   return (
-    <>
+    <AuthProvider>
       <Toaster
         position="top-right"
         toastOptions={{
@@ -16,13 +17,10 @@ function App() {
         }}
       />
 
-
-      <BrowserRouter>
-        <main className="min-h-screen bg-gray-50 dark:bg-gray-900">
-          <ClientesPage />
-        </main>
-      </BrowserRouter>
-    </>
+      <main className="min-h-screen bg-gray-50 dark:bg-gray-900">
+        <RouterProvider router={router} />
+      </main>
+    </AuthProvider>
   );
 }
 
